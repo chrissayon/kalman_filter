@@ -1,0 +1,11 @@
+name: Continuous Integration
+
+on: [push]
+
+jobs:
+  build:
+    name: Unit Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unit Testing Step 1
+      - run: echo 'Hello World!'
