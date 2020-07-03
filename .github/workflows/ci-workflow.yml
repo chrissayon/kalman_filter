@@ -20,6 +20,6 @@ jobs:
     - name: make
       run: make
     - name: unit_tests
-      run: ls
+      run: ./kalman_test.exe
       working-directory: ./tests
       
