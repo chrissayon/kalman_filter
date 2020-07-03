@@ -4,5 +4,5 @@
 
 int main(){
     kalman_filter kalman;
-    printf("Hello World");    
+    printf("%i", kalman.process_noise_dimensions[1]);    
 }
