@@ -114,4 +114,5 @@ class kalman_filter {
 
         kalman_filter();
         bool predict(double update_time, double update_acceleration);
+        bool update(double update_measurement);
 };

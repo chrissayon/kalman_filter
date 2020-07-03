@@ -103,3 +103,66 @@ kalman_filter::kalman_filter(){
     
     identity_matrix_set = false;
 };
+
+
+bool kalman_filter::predict(double update_time, double update_acceleration) {
+
+    state_transition_matrix(0, 1) = update_time;
+    control_function_matrix(0, 0) = (0.5)*(update_time*update_time);
+    control_function_matrix(1, 0) = update_time;
+    control_matrix(0, 0) = update_acceleration;
+
+    process_noise_matrix(0, 0) = (update_time*update_time*update_time*update_time)/4;             
+    process_noise_matrix(0, 1) = (update_time*update_time*update_time)/2;
+    process_noise_matrix(1, 0) = (update_time*update_time*update_time)/2;
+    process_noise_matrix(1, 1) = update_time;
+    
+    state_matrix = (state_transition_matrix * state_matrix) + (control_function_matrix * control_matrix); // x = Fx + Bu
+    covariance_matrix = (state_transition_matrix * covariance_matrix * state_transition_matrix.transpose()) + process_noise_matrix; // P = FPF + Q
+
+    return true;
+}
+
+
+bool kalman_filter::update(double update_measurement) {
+
+    measurement_value_matrix(0, 0) = update_measurement; 
+    
+    system_uncertainty_matrix = (measurement_function_matrix * covariance_matrix * measurement_function_matrix.transpose()) + measurement_noise_matrix;
+    system_uncertainty_matrix(0, 0) = 1/system_uncertainty_matrix(0, 0);
+    
+    kalman_gain_matrix = (covariance_matrix * measurement_function_matrix.transpose()) * (system_uncertainty_matrix);
+    
+    residual_matrix = measurement_value_matrix - (measurement_function_matrix * state_matrix);
+    
+    state_matrix = state_matrix + (kalman_gain_matrix * residual_matrix);
+    
+    KH = kalman_gain_matrix * measurement_function_matrix;
+    
+    if(identity_matrix_set == false){
+       
+        identity_matrix_set = true;
+        identity_matrix.resize(KH.rows(), KH.cols());
+
+        for(int i = 0; i < KH.rows(); i++){
+
+            for(int j = 0; j < KH.cols(); j++){
+                
+                if(i == j){
+                    identity_matrix(i, j) = 1;
+                } else {
+                    identity_matrix(i, j) = 0;
+                }
+
+            }
+
+        }
+    }
+
+    KH = identity_matrix - KH;
+    
+    // covariance_matrix = KH*covariance_matrix*KH.transpose() + kalman_gain_matrix*measurement_noise_matrix*kalman_gain_matrix.transpose();
+    covariance_matrix = KH*covariance_matrix;
+
+    return true;
+}
