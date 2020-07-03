@@ -14,7 +14,24 @@
 // x_final = (x_k) + Ky             - Update State
 // P_final = (I-KH)P                - Update Covariance
 
+#include <Eigen>
+
+using Eigen::MatrixXd;
+using Eigen::Transpose;
+
 class kalman_filter {
+    private:
+        double time;
+        double acceleration;
+        bool identity_matrix_set;
+             
+
     public:
-        void test();
+        // User initialize variables
+        int state_dimensions[1];                // Specify x - State Dimension, always M x 1
+        MatrixXd state_matrix;              
+                                                /* 
+                                                [distance]
+                                                [velocity] 
+                                                */
 };

@@ -4,6 +4,5 @@
 
 int main(){
     kalman_filter kalman;
-    kalman.test();
     printf("Hello World");    
 }
