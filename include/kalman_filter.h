@@ -14,9 +14,7 @@
 // x_final = (x_k) + Ky             - Update State
 // P_final = (I-KH)P                - Update Covariance
 
-#include <stdint.h>
-
-#pragma once
-
 class kalman_filter {
+    public:
+        void test();
 };

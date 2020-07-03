@@ -1,22 +1,25 @@
 CC=g++
-CFLAGS=-Wall
+CFLAGS=-Wall 
 SRC=./src
+INCLUDE=./include
 
 all: main test
+# all: $(SRC)/%.o
 
-# -o used to compile and link the file with executable file
-main: main_compile
-	$(CC) main.o -o kalman_test.exe
+main: main_compile kalman_compile
+	$(CC) main.o kalman_filter.o -o kalman_build.exe
 
-# -c used to compile and assemble the file and not link object code to produce executable file
 main_compile: 
-	$(CC) $(CFLAGS) -c $(SRC)/main.cpp
+	$(CC) $(CFLAGS) -c $(SRC)/main.cpp -I$(INCLUDE)
 
-# Remove executable files
+kalman_compile:
+	$(CC) $(CFLAGS) -c $(SRC)/kalman_filter.cpp -I$(INCLUDE)
+
+# $(SRC)/%.o: $(SRC)/%.cpp 
+# 	$(CC) $(CFLAGS) -c $<
+
 clean:
 	rm -f *.o
 
-# Unit tests
 test:
 	cd tests && $(MAKE)
-	
